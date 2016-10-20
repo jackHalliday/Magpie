@@ -1,0 +1,17 @@
+<series>
+	<shot name="s0105_16">
+		<filePath>/path/to/dir</filePath>
+		<diagnostic type="interferometry">
+			<filePath>/relative/path/</filePath>
+			<time>240</time>
+			<scale>14.3</scale>
+			<origin>
+				<x>22</x>
+				<y>16</y>
+			</origin>
+			<wavelength>532</wavelength>
+			<shotFileName>shot.jpg</shotFileName>
+			<backFileName>back.jpg</backFileName>
+		</diagnostic>
+	</shot>
+</series>
