@@ -16,32 +16,42 @@ class Diagnostic:
 
     # Load methods for all valid fields should be defined here.
     # Classes which inherit from Diagnostic should not define thier own load 
-    # methods: Fields used in multipe diagnostics & have to ensure consistancy
-    def _loadTime(self, xmlMember):
-        self.time = float( xmlMember.find('time').text )
+    # methods: Fields used in multipe diagnostics & have to ensure consistancy.
+    # If a field is not found in the XML, its load method should write a None 
+    # type to the target variable 
+    def _LoadTime(self, xmlMember):
+        self.time = self._Load(xmlMember, 'time', float)
     
-    def _loadScale(self, xmlMember):
-        self.scale = float( xmlMember.find('scale').text )
+    def _LoadScale(self, xmlMember):
+        self.scale = self._Load(xmlMember, 'scale', float)
         
-    def _loadWavelength(self, xmlMember):
-        self.wavelength = float( xmlMember.find('wavelength').text )
+    def _LoadWavelength(self, xmlMember):
+        self.wavelength = self._Load(xmlMember, 'wavelegnth', str)
         
-    def _loadShotFileName(self, xmlMember):
-        self.shotFileName = xmlMember.find('shotFileName').text
+    def _LoadShotFileName(self, xmlMember):
+        self.shadowFileName = self._Load(xmlMember, 'shotFileName', str)
 
-    def _loadBackFileName(self, xmlMember):
-        self.backFileName = xmlMember.find('backFileName').text
+    def _LoadBackFileName(self, xmlMember):
+        self.backFileName = self._Load(xmlMember, 'backFileName', str)
     
-    def _loadShadowFileName(self, xmlMember):
-        self.shadowFileName = xmlMember.find('shadowFileName').text
+    def _LoadShadowFileName(self, xmlMember):
+        self.shadowFileName = self._Load(xmlMember, 'shadowFileName', str)
 
-    def _loadOrigin(self, xmlMember):
+    def _LoadOrigin(self, xmlMember):
         originMember = xmlMember.find('origin')
-        originX = int( originMember.find('x').text )
-        originY = int( originMember.find('y').text )
-        self.origin = (originX, originY)
-    
-    def _load(self, xmlMember, tag, targetType):
+        originX = self._Load(originMember, 'x', int)
+        originY = self._Load(originMember, 'y', int)
+        isValidInput = type(originX)!=None and type(originY)!=None
+        if(isValidInput):    
+            self.origin = (originX, originY)
+        else:
+            self.origin = None
+            
+    def _Load(self, xmlMember, tag, targetType):
+        """
+        Method to load specified tag from xmlMember, and cast to targetType.
+        If specified type not found, method returns None.
+        """
         try:
             return targetType( xmlMember.find(tag).text )
         except AttributeError:
@@ -50,13 +60,13 @@ class Diagnostic:
     
     fieldNames = {
                   # Relates field names (as strings) to the load methods
-                      'time': _loadTime, 
-                      'scale':_loadScale,
-                      'wavelength': _loadWavelength,
-                      'shotFileName': _loadShotFileName,
-                      'backFileName': _loadBackFileName,
-                      'shadowFileName': _loadShadowFileName,
-                      'origin': _loadOrigin,
+                      'time': _LoadTime, 
+                      'scale':_LoadScale,
+                      'wavelength': _LoadWavelength,
+                      'shotFileName': _LoadShotFileName,
+                      'backFileName': _LoadBackFileName,
+                      'shadowFileName': _LoadShadowFileName,
+                      'origin': _LoadOrigin,
                        }
     def LoadFields(self, fieldNameList, xmlMember):
         """
