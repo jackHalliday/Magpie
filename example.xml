@@ -1,6 +1,7 @@
 <series>
 	<shot name="s0105_16">
 		<filePath>/path/to/dir</filePath>
+		<description>Some human readable string</description>
 		<diagnostic type="interferometry">
 			<filePath>/relative/path/</filePath>
 			<time>240</time>

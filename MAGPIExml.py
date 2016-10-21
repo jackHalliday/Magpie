@@ -18,7 +18,7 @@ class Diagnostic:
     # Classes which inherit from Diagnostic should not define thier own load 
     # methods: Fields used in multipe diagnostics & have to ensure consistancy.
     # If a field is not found in the XML, its load method should write a None 
-    # type to the target variable 
+    # type to the target variable. 
     def _LoadTime(self, xmlMember):
         self.time = self._Load(xmlMember, 'time', float)
     
@@ -47,13 +47,14 @@ class Diagnostic:
         else:
             self.origin = None
             
-    def _Load(self, xmlMember, tag, targetType):
+    def _Load(self, xmlMember, tag, cast):
         """
-        Method to load specified tag from xmlMember, and cast to targetType.
-        If specified type not found, method returns None.
+        Loads specified tag from xmlMember, then acts on loaded data with cast
+        function & returns result. If the tag is not found in xmlMember, 
+        returns None.
         """
         try:
-            return targetType( xmlMember.find(tag).text )
+            return cast( xmlMember.find(tag).text )
         except AttributeError:
             return None
             
@@ -83,7 +84,7 @@ class Interferometry (Diagnostic):
     """
     Class to handle interferometry data
     """
-    includedFields = ['time', 'scale', 'wavelength', 'shotFileName', 
+    includedFields = ['time', 'scale', 'wavelength', 'shotFileName', 'origin',
                       'backFileName', 'shadowFileName']
                       
     def __init__(self, xmlMember):
@@ -97,10 +98,12 @@ class Shot:
     diagnosticClasses = { 
                          # Relates field tags (in XML) to diagnostic classes
                          'interferometry': Interferometry
-                         } 
+                         }
     
     def __init__(self, xmlMember):
         self.filePath = xmlMember.find('filePath').text
+        self.name = xmlMember.attrib['name']
+        self.description = self._Load(xmlMember, 'description')
         self.diagnostics = { }
         for xmlChild in xmlMember.iter('diagnostic'):
             diagnosticType = xmlChild.attrib['type']
@@ -109,4 +112,9 @@ class Shot:
                 self.diagnostics[diagnosticType] = diagnostic  
             except KeyError:
                 print ("Diagnostic type: " + diagnosticType + " is unknown")
-            
+
+    def _Load(self, xmlMember, tag):
+        try:
+            return xmlMember.find(tag).text
+        except AttributeError:
+            return None
