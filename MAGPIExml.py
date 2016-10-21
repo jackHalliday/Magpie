@@ -15,8 +15,8 @@ class Diagnostic:
         self.path = xmlMember.find('filePath').text
 
     # Load methods for all valid fields should be defined here.
-    # Classes which inherit from Diagnostic should not define thier own load 
-    # methods: Fields used in multipe diagnostics & have to ensure consistancy.
+    # Classes which inherit from Diagnostic should not define their own load 
+    # methods: Fields used in multiple diagnostics & have to ensure consistency.
     # If a field is not found in the XML, its load method should write a None 
     # type to the target variable. 
     def _LoadTime(self, xmlMember):
@@ -78,7 +78,7 @@ class Diagnostic:
             try:
                 self.fieldNames[name](self, xmlMember)
             except KeyError:
-                print ("An unknown field name was provided")
+                print ("An unknown field name was provided: "+name) 
 
 class Interferometry (Diagnostic):
     """
