@@ -15,3 +15,6 @@ xmlShot = root.getchildren()[0]
 
 shot = MAGPIExml.Shot(xmlShot)
 interferometry = shot.diagnostics['interferometry']
+
+xmlShot2 = shot.Store()
+shot2 = MAGPIExml.Shot(xmlShot2)
